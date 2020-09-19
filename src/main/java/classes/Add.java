@@ -1,42 +1,39 @@
 package classes;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Add {
+    private static Scanner scanner = new Scanner(System.in);
     public static String Name() {
-        String a = null;
-        while (a == null) {
-            Scanner s = new Scanner(System.in);
+        String name = null;
+        while (name == null) {
             System.out.println("Type Product's name: ");
-            a = s.nextLine();
-            if (a.length() == 0) {
-                a = null;
+            name = scanner.nextLine();
+            if (name.length() == 0) {
                 System.out.println("Name can't be empty");
-                continue;
             } else {
                 System.out.println("Name is added!");
             }
         }
-        return a;
+        return name;
     }
 
     public static Float X() {
         Float x = null;
         while (x == null) {
-            Scanner s = new Scanner(System.in);
             System.out.println("coordinate x (max 696) : ");
             try {
-                x = s.nextFloat();
-                if (x > 696) throw new Exception();
+                x = scanner.nextFloat();
+                if (x > 696) {
+                    System.out.println("need to be less than 696");
+                    x = null;
+                }
             } catch (Exception e) {
-                System.out.println("Wrong type(need float) and less than 696");
+                System.out.println("Wrong type(need float)");
                 x = null;
-                continue;
+                scanner.nextLine();
             }
         }
         return x;
@@ -45,67 +42,63 @@ public class Add {
     public static Integer Y() {
         Integer y = null;
         while (y == null) {
-            Scanner s = new Scanner(System.in);
             System.out.println("coordinate y (min -126): ");
             try {
-                y = s.nextInt();
-                if (y < -126) throw new Exception();
+                y = scanner.nextInt();
+                if (y < -126) {
+                    System.out.println("need to be more than -126");
+                    y=null;
+                }
             } catch (Exception e) {
-                System.out.println("Wrong type (need integer) and greater than -126");
+                System.out.println("Wrong type (need integer)");
                 y = null;
-                continue;
+                scanner.nextLine();
             }
         }
+        scanner.nextLine();
         return y;
     }
 
-    public static Double Price() throws IOException {
-        double d = -1;
-        while (d == -1) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    public static Double Price() {
+        double price = -1;
+        while (price < 0) {
             System.out.println("Product price is: ");
             try {
-                d = Double.parseDouble(reader.readLine());
-                if (d < 0) throw new Exception();
+                price = Double.parseDouble(scanner.nextLine());
+                if (price<0){
+                    System.out.println("price cannot be less than 0");
+                }else
+                System.out.println("Price is added");
             } catch (Exception e) {
-                System.out.println("Wrong type (need double) or greater than 0");
-                d = -1;
-                continue;
+                System.out.println("Wrong type (need double)");
+                price = -1;
             }
         }
-        return d;
+        return price;
     }
 
     public static UnitOfMeasure UOM() {
-        UnitOfMeasure u = null;
-        while (u == null) {
+        UnitOfMeasure unitOfMeasure = null;
+        while (unitOfMeasure == null) {
             System.out.println("Choose unit of measure: kilograms, pcs or liters");
             try {
-                Scanner s = new Scanner(System.in);
-                String string = s.nextLine();
-                if (string == null)
-                    u = null;
-                else
-                    u = UnitOfMeasure.valueOf(string.toUpperCase().trim());
+                String string = scanner.nextLine();
+                unitOfMeasure = UnitOfMeasure.valueOf(string.toUpperCase().trim());
             } catch (IllegalArgumentException e) {
                 System.out.println("wrong input");
-                u = null;
-                continue;
+                unitOfMeasure = null;
             }
         }
-        return u;
+        return unitOfMeasure;
     }
 
     public static String OwnerName() {
         String name = null;
         while (name == null) {
-            Scanner s = new Scanner(System.in);
             System.out.println("Type owner's name: ");
-            name = s.nextLine();
+            name = scanner.nextLine();
             if (name.length() == 0) {
-                name = null;
                 System.out.println("Name can't be empty");
-                continue;
             } else {
                 System.out.println("Name is added!");
             }
@@ -118,30 +111,29 @@ public class Add {
         while (weight == null) {
             System.out.println("Type owner's weight: ");
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                weight = Double.parseDouble(reader.readLine());
-                if (weight <= 0) throw new Exception();
+                weight = Double.parseDouble(scanner.nextLine());
+                if (weight <= 0){
+                    System.out.println("weight can't be less then 1");
+                    weight = null;
+                }
             } catch (Exception e) {
-                System.out.println("Type weight in numbers greater than 0");
+                System.out.println("wrong type(need double)");
                 weight = null;
-                continue;
             }
         }
         return weight;
     }
 
-    public static Color Haircolor() {
+    public static Color HairColor() {
         Color hairColor = null;
         while (hairColor == null) {
             System.out.println("Type owner's hair color: red, black, yellow or brown ");
             try {
-                Scanner scanner = new Scanner(System.in);
                 String a = scanner.nextLine();
                 hairColor = Color.valueOf(a.toUpperCase().trim());
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println("You need to type one of 4 colors");
                 hairColor = null;
-                continue;
             }
         }
         return hairColor;
@@ -152,13 +144,11 @@ public class Add {
         while (nation == null) {
             System.out.println("Type owner's country: France, Italy ot North_Korea");
             try {
-                Scanner scanner = new Scanner(System.in);
                 String a = scanner.nextLine();
                 nation = Country.valueOf(a.toUpperCase().trim());
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 System.out.println("You need to type one of 3 countries");
                 nation = null;
-                continue;
             }
         }
         return nation;
@@ -169,14 +159,12 @@ public class Add {
         while (dateTime == null) {
             System.out.println("Type owner's birthday in format yyyy-MM-dd hh:mm");
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                String a = reader.readLine();
+                String a = scanner.nextLine();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 dateTime = LocalDateTime.parse(a, formatter);
             } catch (Exception e) {
                 System.out.println("check format");
                 dateTime = null;
-                continue;
             }
         }
         return dateTime;

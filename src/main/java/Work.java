@@ -1,29 +1,26 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Work {
     Commands commands = new Commands();
-    public static Scanner scanner = new Scanner(System.in);
-    public Work() throws IOException {
+    private String file;
+    void start(String arg, Scanner scanner) throws IOException {
+        file = arg;
+        commands.start(file);
+        execute(scanner);
     }
-
-    void start(String a) throws InterruptedException, IOException {
-        commands.start(a);
-        boolean v = true;
-        String[] arsenal = new String[]{"", ""};
-        while(v){
+    void execute(Scanner scanner) throws IOException {
+        while(true){
+            String[] inputString = new String[]{"", ""};
             System.out.println("Type command:");
             try {
-                a = scanner.nextLine();
-                a.toLowerCase();
-                arsenal = a.split(" ");
+                String a = scanner.nextLine().toLowerCase().trim();
+                inputString = a.split(" ");
             }catch (Exception e){
                 scanner = new Scanner(System.in);
             }
-            if (arsenal[0].equals("exit")){
-                v = false;
-            }
-            switch (arsenal[0]){
+            switch (inputString[0]){
                 case "help":
                     commands.help();
                     break;
@@ -36,29 +33,26 @@ public class Work {
                 case "add":
                     commands.add();
                     break;
-                case "update":
-                    if (arsenal.length==1){
+                case "updateid":
+                    if (inputString.length==1){
                         System.out.println("need to type id");
                         continue;
                     }else {
                         try {
-                            commands.update(Long.valueOf(arsenal[1]));
+                            commands.update(Integer.parseInt(inputString[1]));
                             break;
                         }catch (Exception e){
-                            System.out.println("Long needed");
+                            System.out.println("id need to be int");
                             break;
                         }
                     }
-                case "remove_by_id":
-                    if (arsenal.length==1){
+                case "removebyid":
+                    if (inputString.length==1){
                         System.out.println("need to type id");
                         continue;
                     }else {
                         try {
-                            commands.remove_by_id(Long.valueOf(arsenal[1]));
-                            break;
-                        } catch (NullPointerException f) {
-                            System.out.println("no such element");
+                            commands.removeId(Long.parseLong(inputString[1]));
                             break;
                         }
                         catch (Exception e){
@@ -72,41 +66,31 @@ public class Work {
                     commands.save();
                     System.out.println("Collection saved");
                     break;
-                case "execute_script":
-                    if (arsenal.length==1){
+                case "executescript":
+                    if (inputString.length==1){
                         System.out.println("need to type file");
                         continue;
                     }else {
                         try {
-                            commands.execute_script(arsenal[1]);
+                            System.out.println("starting execution");
+                            new Work().start(file, new Scanner(new File(inputString[1])));
                             break;
                         } catch (Exception e) {
                             System.out.println("No such file");
                         }
                     }
                 case "exit":
-                    commands.exit();
+                    System.exit(0);
                     break;
-                case "remove_at":
-                    if (arsenal.length==1){
-                        System.out.println("need to type index");
-                        continue;
-                    }else {
-                        try {
-                            commands.remove_at(Integer.valueOf(arsenal[1]));
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("int needed");
-                            continue;
-                        }
-                    }
-                case "add_if_max":
-                    if (arsenal.length == 1){
+                case "removefirst":
+                    commands.removeFirst();
+                case "addifmax":
+                    if (inputString.length == 1){
                         System.out.println("need to type price");
                         continue;
                     }else {
                         try {
-                            commands.add_if_max(Double.valueOf(arsenal[1]));
+                            commands.addMax(Double.parseDouble(inputString[1]));
                             break;
                         }catch (Exception e){
                             System.out.println("double needed");
@@ -116,24 +100,24 @@ public class Work {
                 case "shuffle":
                     commands.shuffle();
                     break;
-                case "filter_by_owner":
-                    if (arsenal.length==1){
+                case "filterbyownername":
+                    if (inputString.length==1){
                         System.out.println("need to type owner's name");
                         continue;
                     }else {
-                        commands.filter_by_owner(arsenal[1]);
+                        commands.filterOwner(inputString[1]);
                         break;
                     }
-                case "filter_contains_name":
-                    if (arsenal.length==1){
+                case "filtercontainsname":
+                    if (inputString.length==1){
                         System.out.println("need to type owner's name");
                         continue;
                     }else {
-                            commands.filter_contains_name(arsenal[1]);
+                            commands.filterName(inputString[1]);
                             break;
                         }
-                case "print_field_descending_price":
-                    commands.print_field_descending_price();
+                case "printfielddescendingprice":
+                    commands.printFieldDescendingPrice();
                     break;
                 default:
                     System.out.println("No such command");

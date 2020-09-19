@@ -5,82 +5,79 @@ import java.time.LocalDateTime;
 import java.util.*;
 import classes.Coordinates;
 import classes.Person;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 
 public class Commands {
     ArrayList<Product> array = new ArrayList<>();
-    public Commands(){
+
+    public Commands() {
     }
+
     private LocalDateTime dateTime = LocalDateTime.now();
     String json;
     String file;
 
-    void start(String a) throws InterruptedException {
-        file = a;
-        try{
-            FileInputStream fin = new FileInputStream(a);
-            String arsenal = "";
-            char c;
-            int j = 0;
-            while (j != -1) {
-                j = fin.read();
-                c = (char) j;
-                if (j == -1) continue;
-                arsenal = arsenal.concat(String.valueOf(c));
-                }
+    void start(String fileName){
+        file = fileName;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Gson gson = new Gson();
-            array = gson.fromJson(arsenal,new TypeToken<ArrayList<Product>>(){}.getType());
-            if(array.size()==0){
-                System.out.println(" ");
-            }
-        }catch (Exception e){
-            System.out.println("Error with file");
-            System.exit(0);
+            array = gson.fromJson(reader, new TypeToken<List<Product>>() {
+            }.getType());
+
+        } catch (FileNotFoundException e) {
+            System.out.println("no such file");
+            System.exit(-1);
+        } catch (Exception e) {
+            System.out.println("wrong file");
+            System.exit(-1);
+
+
         }
-        System.out.println("HI!");
-        Thread.sleep(1000);
-        System.out.println("It's a collection's management program.");
-        Thread.sleep(1000);
-        System.out.println("Type \"help\" to see commands.");
+
     }
-    void help(){
-        System.out.println("help : вывести справку по доступным командам\n"+
-                "info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.\n"+
+
+    void help() {
+        System.out.println("help : вывести справку по доступным командам\n" +
+                "info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.\n" +
                 "show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении\n" +
-                "add {element} : добавить новый элемент в коллекцию\n"+
-                "update id {element} : обновить значение элемента коллекции, id которого равен заданному\n"+
-                "remove_by_id id : удалить элемент из коллекции по его id\n"+
-                "clear : очистить коллекцию\n"+
-                "save : сохранить коллекцию в файл\n"+
-                "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.\n"+
-                "exit : завершить программу (без сохранения в файл)\n"+
-                "remove_at index : удалить элемент, находящийся в заданной позиции коллекции (index)\n"+
-                "add_if_max {element} : добавить новый элемент в коллекцию, если его значение цены превышает значение наибольшего элемента этой коллекции\n"+
-                "shuffle : перемешать элементы коллекции в случайном порядке\n"+
-                "filter_by_owner owner : вывести элементы, значение поля owner которых равно заданному\n"+
-                "filter_contains_name name : вывести элементы, значение поля name которых содержит заданную подстроку\n"+
-                "print_field_descending_price : вывести значения поля price всех элементов в порядке убывания\n");
+                "add {element} : добавить новый элемент в коллекцию\n" +
+                "update id {element} : обновить значение элемента коллекции, id которого равен заданному\n" +
+                "remove by id id : удалить элемент из коллекции по его id\n" +
+                "clear : очистить коллекцию\n" +
+                "save : сохранить коллекцию в файл\n" +
+                "execute script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.\n" +
+                "exit : завершить программу (без сохранения в файл)\n" +
+                "remove_first : удалить первый элемент из коллекции\n" +
+                "add if max {element} : добавить новый элемент в коллекцию, если его значение цены превышает значение наибольшего элемента этой коллекции\n" +
+                "shuffle : перемешать элементы коллекции в случайном порядке\n" +
+                "filter by owner owner : вывести элементы, значение поля owner которых равно заданному\n" +
+                "filter contains name name : вывести элементы, значение поля name которых содержит заданную подстроку\n" +
+                "print field descending price : вывести значения поля price всех элементов в порядке убывания\n");
     }
-    void info(){
+
+    void info() {
         System.out.println("Collection's type is " + array.getClass() + ". \n" +
                 "Date of initialization is " + dateTime + ". \n" +
                 "Size of collection is " + array.size());
     }
-    void show(){
-        if (array.isEmpty()){
+
+    void show() {
+        if (array.isEmpty()) {
             System.out.println("Collection is empty");
-        }else
-            for (Product a : array){
-                System.out.println("This is all elements of collection:");
-                System.out.println(a);
+        } else {
+            System.out.println("This is all elements of collection:");
+            for (Product product : array) {
+                System.out.println(product);
+            }
         }
     }
-    void add() throws IOException {
-        int id  = array.size();
-        for (Product a : array) {
-            if (a.getId()==id)
-                id+=100;
+
+    void add() {
+        int id = array.size()+100;
+        for (Product product : array) {
+            if (product.getId() == id)
+                id += 100;
         }
         String name = Add.Name();
         float x = Add.X();
@@ -90,193 +87,156 @@ public class Commands {
         String ownerName = Add.OwnerName();
         LocalDateTime ownerBirthday = Add.Birthday();
         double weight = Add.OwnerWeight();
-        Color hair = Add.Haircolor();
+        Color hair = Add.HairColor();
         Country nation = Add.Nation();
         array.add(new Product(id, name, new Coordinates(x, y), new Date(), price, uom,
                 new Person(ownerName, ownerBirthday, weight, hair, nation)));
         json = new Gson().toJson(array);
         System.out.println("Element added");
     }
-    void update(long a) throws IOException {
-        for (Product b : array){
-            if (a==b.getId()){
-                boolean c = true;
-                while (c){
+
+    void update(long id){
+        boolean existId = false;
+            for (Product product : array) {
+            if (product.getId() == id) {
+                boolean cycle = true;
+                existId = true;
+                while (cycle) {
                     System.out.println("Type what you want to update");
                     System.out.println("To exit this command type 'exit'");
                     Scanner scanner = new Scanner(System.in);
-                    String r = scanner.nextLine().toLowerCase();
-                    switch (r) {
+                    String update = scanner.nextLine().toLowerCase().trim();
+                    switch (update) {
                         case "name":
                             String name = Add.Name();
-                            b.setName(name);
+                            product.setName(name);
                             System.out.println("Name updated");
                             break;
                         case "coordinates":
                             float x = Add.X();
                             int y = Add.Y();
-                            b.setCoordinates(new Coordinates(x,y));
+                            product.setCoordinates(new Coordinates(x, y));
                             System.out.println("Coordinates updated");
                             break;
                         case "price":
                             double price = Add.Price();
-                            b.setPrice(price);
+                            product.setPrice(price);
                             System.out.println("Price updated");
                             break;
                         case "unit of measures":
                             UnitOfMeasure uom = Add.UOM();
-                            b.setUnitOfMeasure(uom);
+                            product.setUnitOfMeasure(uom);
                             System.out.println("Unit of measures updated");
                             break;
                         case "owner":
                             String name1 = Add.OwnerName();
                             LocalDateTime birthday = Add.Birthday();
                             Double weight = Add.OwnerWeight();
-                            Color hair = Add.Haircolor();
+                            Color hair = Add.HairColor();
                             Country nation = Add.Nation();
-                            b.setOwner(new Person(name1,birthday,weight,hair,nation));
+                            product.setOwner(new Person(name1, birthday, weight, hair, nation));
                             System.out.println("Owner updated");
                             break;
                         case "exit":
-                            c = false;
+                            cycle = false;
                             break;
+                        default:
+                            System.out.println("no such parameters. there are only: name;" +
+                                    " coordinates; price; unit of measures or owner");
                     }
                 }
             }
         }
+            if (!existId){
+                System.out.println("no such element");
+            }
     }
-    void remove_by_id(long a){
-        Long wilshere = 0L;
-        try {
-            wilshere = a;
-        }catch(Exception e){
-            System.out.println("id is long type");
-        }
-        Product product = null;
-        for (Product product1 : array) {
-            long newId = product1.getId();
-            if(wilshere==newId) {
-                product = product1;
+
+    void removeId(long id) {
+        boolean isExist = false;
+        for (Product product : array) {
+            if (product.getId() == id) {
+                isExist = true;
+                array.remove(product);
+                System.out.println("removed");
             }
         }
-        if (product.getName().isEmpty()){
-            System.out.println("No element with such id");
-        }else
-            array.remove(product);
-        System.out.println("removed");
+        if (!isExist){
+            System.out.println("No such element");
+        }
     }
-    void clear(){
+
+    void clear() {
         array.clear();
         System.out.println("Collection is clear");
     }
+
     void save() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        char array[] = json.toCharArray();
-        int i=0;
-        while(i<json.length()) {
-            int j= array[i];
-            i++;
-            writer.write(j);
-        }
-        writer.close();
+        FileOutputStream outputStream = new FileOutputStream(file);
+        Gson gson = new Gson();
+        String element = gson.toJson(array, new TypeToken<ArrayList<Product>>() {
+        }.getType());
+        byte[] bytes = element.getBytes();
+        outputStream.write(bytes);
     }
-    void execute_script(String file){
-        try {
-            InputStream fileInputStream = new FileInputStream(file);
-            int i;
-            ArrayList<Character> characters = new ArrayList<>();
-            while((i=fileInputStream.read())!=-1){
-                characters.add((char)i);
-            }
-            String x = "";
-            for (char v : characters){
-                x = x + v;
-            }
-            Work.scanner = new Scanner(x);
-        }catch (Exception e) {
-            System.out.println("no such file");
-        }
+
+
+    void removeFirst(){
+        array.remove(0);
     }
-    void exit(){
-        System.out.println("The program finished");
-    }
-    void remove_at(int a) throws IOException {
-        if (a<array.size()) {
-            array.remove(a);
-            System.out.println("element deleted");
-        }else
-            System.out.println("No such element");
-    }
-    void add_if_max(double price){
+
+    void addMax(double price) {
         ArrayList<Double> doubles = new ArrayList<>();
         for (Product s : array) {
             doubles.add(s.getPrice());
         }
-            if (price > Collections.max(doubles)) {
-                System.out.println("It's the biggest price");
-                System.out.println("Write product's data: ");
-                int id = array.size();
-                for (Product a : array) {
-                    if (a.getId() == id)
-                        id += 100;
-                }
-                String name = Add.Name();
-                float x = Add.X();
-                int y = Add.Y();
-                UnitOfMeasure uom = Add.UOM();
-                String ownerName = Add.OwnerName();
-                LocalDateTime ownerBirthday = Add.Birthday();
-                double weight = Add.OwnerWeight();
-                Color hair = Add.Haircolor();
-                Country nation = Add.Nation();
-                array.add(new Product(id, name, new Coordinates(x, y), new Date(), price, uom,
-                        new Person(ownerName, ownerBirthday, weight, hair, nation)));
-                json = new Gson().toJson(array);
-                System.out.println("Element added");
-            }
-            else
-                System.out.println("Not maximum");
+        if (price > Collections.max(doubles)) {
+            System.out.println("It's the biggest price");
+            System.out.println("Write product's data: ");
+            add();
+        } else
+            System.out.println("Not maximum");
     }
-    void shuffle(){
+
+    void shuffle() {
         Collections.shuffle(array);
+        System.out.println("collection shuffled");
     }
-    void filter_by_owner(String a){
+
+    void filterOwner(String owner) {
         int z = 0;
-        for (Product p : array){
-            if (a.equals(p.getOwner().getName())){
+        for (Product p : array) {
+            if (owner.equals(p.getOwner().getName())) {
                 System.out.println(p);
-            }else
+            } else
                 z++;
         }
-        if (z==array.size())
+        if (z == array.size())
             System.out.println("no matches found");
     }
-    void filter_contains_name(String a){
+
+    void filterName(String name) {
         int z = 0;
-        for (Product p : array){
-            if (p.getName().contains(a))
+        for (Product p : array) {
+            if (p.getName().contains(name))
                 System.out.println(p);
             else
                 z++;
         }
-        if (z==array.size())
+        if (z == array.size())
             System.out.println("no matches found");
     }
-    void print_field_descending_price(){
-        ArrayList<Double> doubles = new ArrayList<>();
-        for (Product s : array) {
-            doubles.add(s.getPrice());
-        }
-        Collections.sort(doubles, Collections.reverseOrder());
-        int i = 0;
-        while(i<doubles.size()){
-            for (Product p : array){
-                if (p.getPrice()== doubles.get(i)) {
-                    System.out.println(p);
-                    continue;
+
+    void printFieldDescendingPrice() {
+        array.sort(new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return Double.compare(o1.getPrice(), o2.getPrice());
             }
-            }
-            i++;
+        });
+        Collections.reverse(array);
+        for (Product product : array) {
+            System.out.println(product);
         }
     }
 }

@@ -3,7 +3,7 @@ package classes;
 import java.util.Date;
 import java.util.Objects;
 
-public class Product {
+public class Product implements Comparable<Product>{
     private long id;
     private String name;
     private Coordinates coordinates;
@@ -31,14 +31,6 @@ public class Product {
         this.name = name;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
     public void setOwner(Person owner) {
         this.owner = owner;
     }
@@ -49,14 +41,6 @@ public class Product {
 
     public void setUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
         this.unitOfMeasure = unitOfMeasure;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
     }
 
     public double getPrice() {
@@ -75,23 +59,19 @@ public class Product {
         return name;
     }
 
-    public UnitOfMeasure getUnitOfMeasure() {
-        return unitOfMeasure;
-    }
-
     @Override
     public boolean equals(Object o){
         if (this == o) return true;
         if (o == null || o.getClass() != this.getClass())
             return false;
-        Product lol = (Product) o;
-        return id == lol.id
-                && Objects.equals(name, lol.name)
-                && Objects.equals(coordinates, lol.coordinates)
-                && Objects.equals(creationDate, lol.creationDate)
-                && Objects.equals(price, lol.price)
-                && Objects.equals(unitOfMeasure, lol.unitOfMeasure)
-                && Objects.equals(owner, lol.owner);
+        Product product = (Product) o;
+        return id == product.id
+                && Objects.equals(name, product.name)
+                && Objects.equals(coordinates, product.coordinates)
+                && Objects.equals(creationDate, product.creationDate)
+                && Objects.equals(price, product.price)
+                && Objects.equals(unitOfMeasure, product.unitOfMeasure)
+                && Objects.equals(owner, product.owner);
     }
     @Override
     public String toString(){
@@ -103,4 +83,10 @@ public class Product {
     public int hashCode(){
         return Objects.hash(id, name, coordinates, creationDate, price, unitOfMeasure, owner);
     }
+
+    @Override
+    public int compareTo(Product o) {
+        return name.compareTo(o.getName());
+    }
+
 }

@@ -1,8 +1,8 @@
 package classes;
 
-enum  Color {
+public enum  Color {
     RED,
     BLACK,
     YELLOW,
-    BROWN;
+    BROWN,
 }
